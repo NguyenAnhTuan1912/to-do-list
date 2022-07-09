@@ -1,0 +1,22 @@
+@mixin cursor-behavior($behavior) {
+    cursor: $behavior;
+}
+
+@mixin flex($direction, $justify-content, $align-item) {
+    display: flex;
+    flex-direction: $direction;
+    justify-content: $justify-content;
+    align-items: $align-item;
+
+    @if $direction == '' {
+        flex-direction: row;
+    }
+
+    @if justify-content == '' {
+        justify-content: flex-start;
+    }
+
+    @if align-items == '' {
+        align-items: flex-start;
+    }
+}

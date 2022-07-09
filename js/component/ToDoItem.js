@@ -6,9 +6,9 @@ export default function ToDoItem(data) {
         <div class="to-do-item">
             ${Header({})}
             <div class="to-do-item__type-container">
-                <p class="type-text"></p>
+                <p class="type-text">Study Exercise</p>
             </div>
-            ${Button([['primary'], ['done']], [['js-viewDetail'], ['js-completeWork']])}
+            ${Button([['btn-primary'], ['btn-done']], [['js-viewDetail'], ['js-completeWork']])}
         </div>
     `;
 }

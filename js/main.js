@@ -1,6 +1,5 @@
 import Header from "./component/Header.js";
 import ToDoList from "./component/ToDoList.js";
-import ToDoItem from "./component/ToDoItem.js";
 
 const root = document.getElementById('root');
 

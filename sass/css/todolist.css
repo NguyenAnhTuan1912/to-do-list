@@ -1,0 +1,60 @@
+.content-container .content__slider-container {
+  width: 200%;
+  min-width: 375px;
+  max-width: 1600px;
+  height: fit-content;
+  left: 0;
+}
+.content-container .content__slider-container .slider__to-do-items-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  min-width: 375px;
+  max-width: 800px;
+  height: fit-content;
+  min-height: 80px;
+  padding: 20px;
+}
+.content-container .content__slider-container .slider__to-do-items-container .to-do-item {
+  display: grid;
+  grid-template-columns: auto 20%;
+  grid-template-areas: "header button" "type button";
+  width: 100%;
+  min-width: 375px;
+  max-width: 620px;
+  height: fit-content;
+  min-height: 80px;
+  padding: 12px 16px;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+  border-radius: 5px;
+}
+.content-container .content__slider-container .slider__to-do-items-container .to-do-item > header {
+  grid-area: header;
+}
+.content-container .content__slider-container .slider__to-do-items-container .to-do-item > header .header__title {
+  font-size: 2.2rem;
+}
+.content-container .content__slider-container .slider__to-do-items-container .to-do-item > header .header__subtitle {
+  font-size: 1.4rem;
+  font-weight: 400;
+}
+.content-container .content__slider-container .slider__to-do-items-container .to-do-item .to-do-item__type-container {
+  width: 100%;
+  height: fit-content;
+  color: #808080;
+  font-size: 1.2rem;
+  font-style: italic;
+}
+.content-container .content__slider-container .slider__to-do-items-container .to-do-item .button-container {
+  grid-area: button;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+}
+
+/*# sourceMappingURL=todolist.css.map */

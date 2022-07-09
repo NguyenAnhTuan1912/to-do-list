@@ -5,10 +5,11 @@ export default function ToDoItem(data) {
     return `
         <div class="to-do-item">
             ${Header({})}
-            <div class="to-do-item__type-container">
-                <p class="type-text">Study Exercise</p>
+            <div class="button-container">
+                ${Button([['btn-view']], [['js-viewDetailBtn']], 'fa-solid fa-eye')}
+                ${Button([['btn-done']], [['js-completeWorkBtn']], 'fa-solid fa-check')}
+                ${Button([['btn-delete']], [['js-deleteBtn']], 'fa-solid fa-xmark')}
             </div>
-            ${Button([['btn-primary'], ['btn-done']], [['js-viewDetail'], ['js-completeWork']])}
         </div>
     `;
 }

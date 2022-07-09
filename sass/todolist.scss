@@ -27,21 +27,33 @@
             padding: 20px;
 
             .to-do-item {
+                position: relative;
                 display: grid;
-                grid-template-columns: auto 20%;
+                grid-template-columns: auto 30%;
                 grid-template-areas:
-                    'header button'
-                    'type button'                
-                ;
+                    'header button';
                 @include setToDoItem-width-heigth(620px);
-                padding: 12px 16px;
+                padding: 12px 16px 12px 20px;
                 box-shadow: $box-shadow1;
                 border-radius: 5px;
 
-                &>header {       
+                &:after {
+                    position: absolute;
+                    content: '';
+                    width: 5px;
+                    height: 100%;
+                    background-color: $fc-title;
+                    border-radius: 5px 0 0 5px;
+                }
+
+
+                &>header {
+                    @include flex(column, center, flex-start);
+                    height: 100%;       
                     grid-area: header;     
                     .header__title {
                         font-size: 2.2rem;
+                        line-height: 2rem;
                     }
                 
                     .header__subtitle {
@@ -60,7 +72,7 @@
 
                 .button-container {
                     grid-area: button;  
-                    @include flex(column, space-around, flex-start);
+                    @include flex(row, space-around, center);
                     gap: 10px;
                     width: 100%;
                 }

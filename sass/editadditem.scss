@@ -1,0 +1,54 @@
+@import './variables.scss';
+@import './mixin.scss';
+
+// Mixin
+
+@mixin default-width-height {
+    width: 100%;
+    height: fit-content;
+}
+
+//
+.modal__item {
+    width: 100%;
+    min-width: 375px;
+    max-width: 620px;
+    height: fit-content;
+    min-height: 220px;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: $box-shadow1;
+    background-color: #fff;
+
+    &>header {
+        @include default-width-height;
+        margin-bottom: 15px;
+
+        .header__title {
+            font-size: 3rem;
+        }
+    
+        .header__subtitle {
+            font-size: 1.4rem;
+        }
+    }
+
+    #to-do-form {
+        @include default-width-height;
+
+        article {
+            @include flex(column, space-around, flex-start);
+            gap: 10px;
+            @include default-width-height;
+
+            label {
+                @include default-width-height;
+            }
+        }
+    }
+
+    .button-container {
+        @include flex(row, flex-end, flex-start);
+        margin-top: 15px;
+    }
+}

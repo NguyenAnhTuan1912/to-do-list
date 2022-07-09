@@ -1,0 +1,13 @@
+*, :before, :after {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    font-family: Roboto, 'Sans-Serif';
+}
+
+html {
+    font-size: 10px;
+}

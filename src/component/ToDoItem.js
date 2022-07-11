@@ -4,7 +4,7 @@ import Button from "./Button.js";
 export default function ToDoItem(data) {
     return `
         <div class="to-do-item">
-            ${Header({})}
+            ${Header(data)}
             <div class="button-container">
                 ${Button([['btn-view', 'btn--round']], [['js-viewDetailBtn']], 'visibility')}
                 ${Button([['btn-done', 'btn--round']], [['js-completeWorkBtn']], 'done')}

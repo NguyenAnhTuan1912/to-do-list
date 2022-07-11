@@ -3,7 +3,7 @@
   min-width: 375px;
   max-width: 1600px;
   height: fit-content;
-  left: 0;
+  min-height: 120px;
 }
 .content-container .content__slider-container .slider__to-do-items-container {
   display: flex;
@@ -15,7 +15,14 @@
   max-width: 800px;
   height: fit-content;
   min-height: 80px;
+  gap: 30px;
   padding: 20px;
+}
+.content-container .content__slider-container .slider__to-do-items-container:first-child {
+  float: left;
+}
+.content-container .content__slider-container .slider__to-do-items-container:last-child {
+  float: right;
 }
 .content-container .content__slider-container .slider__to-do-items-container .to-do-item {
   position: relative;
@@ -45,15 +52,19 @@
   justify-content: center;
   align-items: flex-start;
   height: 100%;
+  max-width: 408px;
   grid-area: header;
 }
 .content-container .content__slider-container .slider__to-do-items-container .to-do-item > header .header__title {
+  max-width: 408px;
   font-size: 2.2rem;
   line-height: 2rem;
 }
 .content-container .content__slider-container .slider__to-do-items-container .to-do-item > header .header__subtitle {
+  max-width: 408px;
   font-size: 1.4rem;
   font-weight: 400;
+  text-overflow: ellipsis;
 }
 .content-container .content__slider-container .slider__to-do-items-container .to-do-item .to-do-item__type-container {
   width: 100%;

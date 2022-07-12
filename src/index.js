@@ -134,14 +134,14 @@ function addTodoItem(element, cb, docId, data) {
         containerEnable(viewTaskContainer, editTaskContainer, addTaskContainer);
     });
 
-    // buttons[2].addEventListener('click', (e) => {
-    //     const docReference = doc(db, 'todo-items', docId);
-    //     deleteDoc(docReference)
-    //     .then(() => {
-            
-    //         console.log('Delete data successfully!');
-    //     });
-    // });
+    buttons[2].addEventListener('click', (e) => {
+        const docReference = doc(db, 'todo-items', docId);
+        deleteDoc(docReference)
+        .then(() => {
+            element.removeChild(buttons[2].parentElement.parentElement);
+            console.log('Delete data successfully!');
+        });
+    });
 
     element.appendChild(div.childNodes[1]);
 }

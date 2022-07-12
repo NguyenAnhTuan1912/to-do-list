@@ -51,7 +51,7 @@ header {
     height: fit-content;
     padding: 20px;
     border-radius: 5px;
-    box-shadow: $box-shadow1;
+    box-shadow: $box-shadow2;
     color: $fc-title;
 }
 
@@ -90,6 +90,7 @@ textarea {
     height: 80px;
     min-height: 50px;
     font-size: 1.6rem;
+    line-height: 1.2;
     resize: vertical;
     padding: 10px;
     border: none;
@@ -141,17 +142,15 @@ textarea {
         .header__subtitle {
             font-size: 2rem;
         }
-
-        &:after {
-            content: '';
-            position: absolute;
-            width: 20%;
-            height: 1px;
-            background-color: rgba(0, 0, 0, .2);
-            bottom: 0;
-        }
     }
     
+    hr {
+        width: 20%;
+        height: 1px;
+        background-color: rgba(0, 0, 0, .1);
+        bottom: 0;
+    }
+
     .content-container {
         width: 100%;
         min-width: 375px;

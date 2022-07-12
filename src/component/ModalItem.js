@@ -8,10 +8,10 @@ export default function EditAddItem(type) {
             <form id="add-to-do-form" class="to-do-form">
                 <article>
                     <label>
-                        <input type="text" name="to-do-item" class="form__text-input" id="js-newTaskTitleInput" placeholder="Write your task's title...." autocomplete="off">
+                        <input type="text" name="to-do-item" class="form__text-input" id="js-newTaskTitleInput" placeholder="Write your task's title...." autocomplete="off" spellcheck="false">
                     </label>
                     <label>
-                        <textarea class="form__text-input" id="js-newTaskDescriptionInput" placeholder="Describe you task's description..."></textarea>
+                        <textarea class="form__text-input" id="js-newTaskDescriptionInput" placeholder="Describe you task's description..." spellcheck="false"></textarea>
                     </label>
                 </article>
             </form>
@@ -26,10 +26,10 @@ export default function EditAddItem(type) {
             <form id="edit-to-do-form" class="to-do-form">
                 <article>
                     <label>
-                        <input type="text" name="to-do-item" class="form__text-input" id="js-editTaskTitleInput" placeholder="Update your new task's title..." autocomplete="off">
+                        <input type="text" name="to-do-item" class="form__text-input" id="js-editTaskTitleInput" placeholder="Update your new task's title..." autocomplete="off" spellcheck="false">
                     </label>
                     <label>
-                        <textarea class="form__text-input" id="js-editTaskDescriptionInput" placeholder="Describe you new task's description..."></textarea>
+                        <textarea class="form__text-input" id="js-editTaskDescriptionInput" placeholder="Describe you new task's description..." spellcheck="false"></textarea>
                     </label>
                 </article>
             </form>
@@ -42,7 +42,6 @@ export default function EditAddItem(type) {
         <div class="modal__item view hide" id="js-viewTaskContainer">
             ${Header({})}
             <div class="button-container">
-                ${Button([['btn-edit', 'btn--round']], [['js-editBtn']], 'edit')}
                 ${Button([['btn-delete', 'btn--round']], [['js-cancelViewBtn']], 'close')}
             </div>
         </div>

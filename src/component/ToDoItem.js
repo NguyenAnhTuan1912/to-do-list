@@ -6,7 +6,7 @@ export default function ToDoItem(data) {
         <div class="to-do-item">
             ${Header(data)}
             <div class="button-container">
-                ${Button([['btn-view', 'btn--round']], [['']], 'visibility')}
+                ${Button([['btn-edit', 'btn--round']], [['']], 'edit')}
                 ${Button([['btn-done', 'btn--round']], [['']], 'done')}
                 ${Button([['btn-delete', 'btn--round']], [['']], 'close')}
             </div>

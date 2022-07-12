@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, addDoc, collection, query, getDocs, doc, deleteDoc } from 'firebase/firestore';
+import { getFirestore, addDoc, collection, query, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firestore';
 
 import Header from "./component/Header.js";
 import ToDoList from "./component/ToDoList.js";
@@ -36,23 +36,36 @@ window.onload = function() {
     const addBtn = document.getElementById('js-addBtn');
 
     const acceptAddBtn = document.getElementById('js-acceptAddBtn');
+    const acceptEditBtn = document.getElementById('js-acceptEditBtn');
     const cancelAddBtn = document.getElementById('js-cancelAddBtn');
     const cancelEditBtn = document.getElementById('js-cancelEditBtn');
     const cancelViewBtn = document.getElementById('js-cancelViewBtn');
     
     const newTaskTitleInputField = document.getElementById('js-newTaskTitleInput');
-    const newTaskTDescription = document.getElementById('js-newTaskDescriptionInput');
+    const newTaskTDescriptionInputField = document.getElementById('js-newTaskDescriptionInput');
+    const editTaskTitleInputField = document.getElementById('js-editTaskTitleInput');
+    const editTaskDescriptionInputField = document.getElementById('js-editTaskDescriptionInput');
 
     addBtn.addEventListener('click', (e) => {
         toggleVisibleContainer(modal);
         containerEnable(addTaskContainer, editTaskContainer, viewTaskContainer);
     });
 
+    // editBtn.addEventListener('click', (e) => {
+    //     const header = viewTaskContainer.getElementsByTagName('header')[0];
+    //     const title = header.getElementsByClassName('header__title')[0];
+    //     const subtitle = header.getElementsByClassName('header__subtitle')[0];
+
+    //     editTaskTitleInputField.value = title.textContent || '';
+    //     editTaskDescriptionInputField.value = subtitle.textContent || '';
+    //     containerEnable(editTaskContainer, addTaskContainer, viewTaskContainer);
+    // });
+
     cancelAddBtn.addEventListener('click', (e) => {
         toggleVisibleContainer(modal);
         addClassName(addTaskContainer, 'hide');
         newTaskTitleInputField.value = '';
-        newTaskTDescription.value = '';
+        newTaskTDescriptionInputField.value = '';
     });
 
     cancelEditBtn.addEventListener('click', (e) => {
@@ -68,12 +81,22 @@ window.onload = function() {
     acceptAddBtn.addEventListener('click', (e) => {
         const data = {
             'header-title': newTaskTitleInputField.value,
-            'header-subtitle': newTaskTDescription.value
+            'header-subtitle': newTaskTDescriptionInputField.value
         }
-        addData(data)
+        addData(data);
         toggleVisibleContainer(modal);
         addClassName(addTaskContainer, 'hide');
+        newTaskTitleInputField.value = '';
+        newTaskTDescriptionInputField.value = '';
     });
+
+    // acceptEditBtn.addEventListener('click', (e) => {
+    //     editData();
+    //     toggleVisibleContainer(modal);
+    //     addClassName(editTaskContainer, 'hide');
+    //     editTaskTitleInputField.value = '';
+    //     editTaskDescriptionInputField.value = '';
+    // });
 }
 
 
@@ -84,7 +107,9 @@ window.onload = function() {
 function renderApp() {
     root.innerHTML = `
         ${Header({'header-title': 'To-do List', 'header-subtitle': 'Save you work to do later.'})}
+        <hr>
         ${Button([['btn-add']], [['js-addBtn']], '', 'Click here to add a new to-do item')}
+        <hr>
         ${ToDoList()}
         ${Modal()}
     `;
@@ -98,18 +123,37 @@ async function loadAllTasks(taskContainer, cb) {
     });
 }
 
-function addData({'header-title': title, 'header-subtitle': subtitle}) {
+async function addData({'header-title': title, 'header-subtitle': subtitle}) {
     const incompleteTaskContainer = document.getElementById('js-incompleteTaskContainer');
     try {
         if(title === '' || title === 'null') throw 'Title is null.'
-        addTodoItem(incompleteTaskContainer, ToDoItem, '', {'header-title': title, 'header-subtitle': subtitle});
-        addDoc(collection(db, 'todo-items'), {
+        await addDoc(collection(db, 'todo-items'), {
             'header-title': title,
             'header-subtitle': subtitle
+        })
+        .then((doc) => {
+            addTodoItem(incompleteTaskContainer, ToDoItem, doc.id, {'header-title': title, 'header-subtitle': subtitle});
         });
     } catch (error) {
         console.error(error);
     }
+}
+
+async function editData(element, data, docId) {
+    const docReference = await doc(db, 'todo-items', docId);
+        await updateDoc(docReference, {
+            'header-title': data['header-title'],
+            'header-subtitle': data['header-subtitle']
+        })
+        .then(() => {
+            const header = element.getElementsByTagName('header')[0];
+            const title = header.getElementsByClassName('header__title')[0];
+            const subtitle = header.getElementsByClassName('header__subtitle')[0];
+
+            title.textContent = data['header-title'],
+            subtitle.textContent = data['header-subtitle']
+            console.log('Update data successfully!');
+        });
 }
 
 function addTodoItem(element, cb, docId, data) {
@@ -119,24 +163,38 @@ function addTodoItem(element, cb, docId, data) {
     const toDoContainer = div.querySelector('.to-do-item:last-child');
     const buttons = toDoContainer.getElementsByTagName('button');
 
-    const modal = document.getElementById('js-modal');
-    const addTaskContainer = document.getElementById('js-addTaskContainer');
-    const editTaskContainer = document.getElementById('js-editTaskContainer');
-    const viewTaskContainer = document.getElementById('js-viewTaskContainer');
+    // const modal = document.getElementById('js-modal');
+    // const addTaskContainer = document.getElementById('js-addTaskContainer');
+    // const editTaskContainer = document.getElementById('js-editTaskContainer');
+    // const viewTaskContainer = document.getElementById('js-viewTaskContainer');
 
-    buttons[0].addEventListener('click', (e) => {
-        const header = viewTaskContainer.getElementsByTagName('header')[0];
-        const title = header.getElementsByClassName('header__title')[0];
-        const subtitle = header.getElementsByClassName('header__subtitle')[0];
-        title.textContent = data['header-title'];
-        subtitle.textContent = data['header-subtitle'];
+    buttons[0].addEventListener('click', async (e) => {
+        // const header = viewTaskContainer.getElementsByTagName('header')[0];
+        // const title = header.getElementsByClassName('header__title')[0];
+        // const subtitle = header.getElementsByClassName('header__subtitle')[0];
+
+        // title.textContent = data['header-title'];
+        // subtitle.textContent = data['header-subtitle'];
+        // toggleVisibleContainer(modal);
+        // containerEnable(viewTaskContainer, editTaskContainer, addTaskContainer);
+        const modal = document.getElementById('js-modal');
+        const addTaskContainer = document.getElementById('js-addTaskContainer');
+        const editTaskContainer = document.getElementById('js-editTaskContainer');
+        const viewTaskContainer = document.getElementById('js-viewTaskContainer');
+        const editTaskTitleInputField = document.getElementById('js-editTaskTitleInput');
+        const editTaskDescriptionInputField = document.getElementById('js-editTaskDescriptionInput');
+        const acceptEditBtn = document.getElementById('js-acceptEditBtn');
+
+
+        editTaskTitleInputField.value = data['header-title'] || '';
+        editTaskDescriptionInputField.value = data['header-subtitle'] || '';
         toggleVisibleContainer(modal);
-        containerEnable(viewTaskContainer, editTaskContainer, addTaskContainer);
+        containerEnable(editTaskContainer, addTaskContainer, viewTaskContainer);
     });
 
-    buttons[2].addEventListener('click', (e) => {
-        const docReference = doc(db, 'todo-items', docId);
-        deleteDoc(docReference)
+    buttons[2].addEventListener('click', async (e) => {
+        const docReference = await doc(db, 'todo-items', docId);
+        await deleteDoc(docReference)
         .then(() => {
             element.removeChild(buttons[2].parentElement.parentElement);
             console.log('Delete data successfully!');

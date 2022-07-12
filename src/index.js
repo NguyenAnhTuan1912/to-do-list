@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, addDoc, collection, query, getDocs } from 'firebase/firestore';
+import { getFirestore, addDoc, collection, query, getDocs, doc, deleteDoc } from 'firebase/firestore';
 
 import Header from "./component/Header.js";
 import ToDoList from "./component/ToDoList.js";
@@ -31,11 +31,9 @@ window.onload = function() {
     const incompleteTaskContainer = document.getElementById('js-incompleteTaskContainer');
     const modal = document.getElementById('js-modal');
 
-    loadTask(incompleteTaskContainer, ToDoItem);
+    loadAllTasks(incompleteTaskContainer, ToDoItem);
 
     const addBtn = document.getElementById('js-addBtn');
-    const viewBtn = document.getElementById('js-viewDetailBtn');
-    const editBtn = document.getElementById('js-editBtn');
 
     const acceptAddBtn = document.getElementById('js-acceptAddBtn');
     const cancelAddBtn = document.getElementById('js-cancelAddBtn');
@@ -48,15 +46,6 @@ window.onload = function() {
     addBtn.addEventListener('click', (e) => {
         toggleVisibleContainer(modal);
         containerEnable(addTaskContainer, editTaskContainer, viewTaskContainer);
-    });
-
-    viewBtn.addEventListener('click', (e) => {
-        toggleVisibleContainer(modal);
-        containerEnable(viewTaskContainer, editTaskContainer, addTaskContainer);
-    });
-
-    editBtn.addEventListener('click', (e) => {
-        containerEnable(editTaskContainer, addTaskContainer, viewTaskContainer);
     });
 
     cancelAddBtn.addEventListener('click', (e) => {
@@ -77,18 +66,11 @@ window.onload = function() {
     });
 
     acceptAddBtn.addEventListener('click', (e) => {
-        try {
-            let title = newTaskTitleInputField.value;
-            let description = newTaskTDescription.value;
-            if(title === '' || title === 'null') throw 'Title is null.'
-            addElement(incompleteTaskContainer, ToDoItem, {'header-title': title, 'header-subtitle': description});
-            addDoc(collection(db, 'todo-items'), {
-                'header-title': title,
-                'header-subtitle': description
-            });
-        } catch (error) {
-            console.error(error);
+        const data = {
+            'header-title': newTaskTitleInputField.value,
+            'header-subtitle': newTaskTDescription.value
         }
+        addData(data)
         toggleVisibleContainer(modal);
         addClassName(addTaskContainer, 'hide');
     });
@@ -108,16 +90,60 @@ function renderApp() {
     `;
 }
 
-async function loadTask(taskContainer, cb) {
+async function loadAllTasks(taskContainer, cb) {
     const q = query(collection(db, 'todo-items'));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
-        addElement(taskContainer, cb, doc.data());
+        addTodoItem(taskContainer, cb, doc.id, doc.data());
     });
 }
 
-function addElement(element, cb, data) {
-    element.innerHTML += cb(data);
+function addData({'header-title': title, 'header-subtitle': subtitle}) {
+    const incompleteTaskContainer = document.getElementById('js-incompleteTaskContainer');
+    try {
+        if(title === '' || title === 'null') throw 'Title is null.'
+        addTodoItem(incompleteTaskContainer, ToDoItem, '', {'header-title': title, 'header-subtitle': subtitle});
+        addDoc(collection(db, 'todo-items'), {
+            'header-title': title,
+            'header-subtitle': subtitle
+        });
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+function addTodoItem(element, cb, docId, data) {
+    const div = document.createElement('div');
+    div.innerHTML = cb(data);
+
+    const toDoContainer = div.querySelector('.to-do-item:last-child');
+    const buttons = toDoContainer.getElementsByTagName('button');
+
+    const modal = document.getElementById('js-modal');
+    const addTaskContainer = document.getElementById('js-addTaskContainer');
+    const editTaskContainer = document.getElementById('js-editTaskContainer');
+    const viewTaskContainer = document.getElementById('js-viewTaskContainer');
+
+    buttons[0].addEventListener('click', (e) => {
+        const header = viewTaskContainer.getElementsByTagName('header')[0];
+        const title = header.getElementsByClassName('header__title')[0];
+        const subtitle = header.getElementsByClassName('header__subtitle')[0];
+        title.textContent = data['header-title'];
+        subtitle.textContent = data['header-subtitle'];
+        toggleVisibleContainer(modal);
+        containerEnable(viewTaskContainer, editTaskContainer, addTaskContainer);
+    });
+
+    // buttons[2].addEventListener('click', (e) => {
+    //     const docReference = doc(db, 'todo-items', docId);
+    //     deleteDoc(docReference)
+    //     .then(() => {
+            
+    //         console.log('Delete data successfully!');
+    //     });
+    // });
+
+    element.appendChild(div.childNodes[1]);
 }
 
 function toggleVisibleContainer(containerName) {

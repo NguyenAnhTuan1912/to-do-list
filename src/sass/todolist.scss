@@ -3,8 +3,8 @@
 
 // Mixin
 
-@mixin setToDoItem-width-heigth($max-width) {
-    width: 100%;
+@mixin setToDoItem-width-heigth($width, $max-width) {
+    width: $width;
     min-width: 375px;
     max-width: $max-width;
     height: fit-content;
@@ -18,12 +18,12 @@
         width: 200%;
         min-width: 375px;
         max-width: 1600px;
-        height: fit-content;
+        height: 100%;
         min-height: 120px;
 
         .slider__to-do-items-container {
             @include flex(column, space-around, center);
-            @include setToDoItem-width-heigth(800px);
+            @include setToDoItem-width-heigth(50%, 700px);
             gap: 30px;
             padding: 20px;
 
@@ -37,11 +37,9 @@
 
             .to-do-item {
                 position: relative;
-                display: grid;
-                grid-template-columns: auto 30%;
-                grid-template-areas:
-                    'header button';
-                @include setToDoItem-width-heigth(620px);
+                @include flex(row, space-between, center);
+                @include setToDoItem-width-heigth(100%, 620px);
+                flex-wrap: wrap;
                 padding: 12px 16px 12px 20px;
                 box-shadow: $box-shadow1;
                 border-radius: 5px;
@@ -53,25 +51,40 @@
                     height: 100%;
                     background-color: $fc-title;
                     border-radius: 5px 0 0 5px;
+                    top: 0;
+                    left: 0;
                 }
 
 
                 &>header {
                     @include flex(column, center, flex-start);
                     height: 100%;
-                    max-width: 408px;       
-                    grid-area: header;     
+                    width: 360px;
+                    max-width: 360px;       
+                    grid-area: header;
+                    
+                    
                     .header__title {
-                        max-width: 408px; 
                         font-size: 2.2rem;
                         line-height: 2rem;
+                        max-width: 360px; 
+                        max-height: 34px;
+                        font-weight: 600;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        padding: 0 5px;
                     }
                 
                     .header__subtitle {
-                        max-width: 408px; 
+                        max-width: 360px; 
                         font-size: 1.4rem;
+                        max-height: 34px;
                         font-weight: 400;
+                        white-space: nowrap;
+                        overflow: hidden;
                         text-overflow: ellipsis;
+                        padding: 0 5px;
                     }
                 }
 
@@ -87,7 +100,7 @@
                     grid-area: button;  
                     @include flex(row, space-around, center);
                     gap: 10px;
-                    width: 100%;
+                    width: 175px;
                 }
             }
         }

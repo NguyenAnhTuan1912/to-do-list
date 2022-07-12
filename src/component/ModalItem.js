@@ -40,7 +40,7 @@ export default function EditAddItem(type) {
         </div>
     ` : (type === 'view') ? `
         <div class="modal__item view hide" id="js-viewTaskContainer">
-            ${Header({'header-title': undefined, 'header-subtitle': undefined})}
+            ${Header({})}
             <div class="button-container">
                 ${Button([['btn-edit', 'btn--round']], [['js-editBtn']], 'edit')}
                 ${Button([['btn-delete', 'btn--round']], [['js-cancelViewBtn']], 'close')}

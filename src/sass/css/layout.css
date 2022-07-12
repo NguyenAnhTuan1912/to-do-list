@@ -107,7 +107,9 @@ textarea {
   visibility: hidden;
 }
 
-.hide {
+.hide, .modal.hide {
+  width: 0;
+  height: 0;
   display: none;
   visibility: hidden;
 }
@@ -147,7 +149,7 @@ textarea {
 #root .content-container {
   width: 100%;
   min-width: 375px;
-  max-width: 800px;
+  max-width: 700px;
   height: fit-content;
   min-height: 100px;
   overflow-x: hidden;
@@ -162,6 +164,12 @@ textarea {
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
   top: 0;
+}
+#root .hide, #root .modal.hide {
+  width: 0;
+  height: 0;
+  display: none;
+  visibility: hidden;
 }
 
 /*# sourceMappingURL=layout.css.map */

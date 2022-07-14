@@ -49,7 +49,9 @@ window.onload = function() {
         const editTaskTitleInputField = document.getElementById('js-editTaskTitleInput');
         const editTaskDescriptionInputField = document.getElementById('js-editTaskDescriptionInput');
 
-        toggleSlider('', inCompleteTaskBtn, completeTaskBtn, true);
+        const slider = document.getElementsByClassName('content__slider-container')[0];
+
+        toggleSlider(slider, inCompleteTaskBtn, completeTaskBtn, true);
 
         addBtn.addEventListener('click', (e) => {
             toggleVisibleContainer(modal);
@@ -124,11 +126,11 @@ window.onload = function() {
         });
 
         inCompleteTaskBtn.addEventListener('click', (e) => {
-            toggleSlider('', inCompleteTaskBtn, completeTaskBtn, true);
+            toggleSlider(slider, inCompleteTaskBtn, completeTaskBtn, true);
         });
 
         completeTaskBtn.addEventListener('click', (e) => {
-            toggleSlider('', inCompleteTaskBtn, completeTaskBtn, false);
+            toggleSlider(slider, inCompleteTaskBtn, completeTaskBtn, false);
         });
     });
 }
@@ -143,7 +145,7 @@ function renderApp() {
         ${Header({'header-title': 'To-do List', 'header-subtitle': 'Save you work to do later.'})}
         <hr>
         <div class="content__button-container">
-            ${Button([['btn-add']], [['js-addBtn']], '', 'Click here to add a new to-do item')}
+            ${Button([['btn-add']], [['js-addBtn']], '', 'Click here to add a new Task')}
             ${Button([['btn-add']], [['js-inCompleteTaskBtn']], '', 'Incomplete task')}
             ${Button([['btn-add']], [['js-completeTaskBtn']], '', 'Complete task')}
         </div>
@@ -222,7 +224,6 @@ function addTodoItem(element, cb, docId, data) {
     });
 
     buttons[0].addEventListener('click', (e) => {
-        
         const modal = document.getElementById('js-modal');
         const addTaskContainer = document.getElementById('js-addTaskContainer');
         const editTaskContainer = document.getElementById('js-editTaskContainer');
@@ -252,23 +253,23 @@ function addTodoItem(element, cb, docId, data) {
     });
 
     buttons[1].addEventListener('click', (e) => {
-        if(data.isComplete) return;
-        const todolist = document.getElementsByClassName('to-do-item');
-        const todoItemNth = Array.from(todolist).indexOf(e.currentTarget.parentElement.parentElement);
+        const taskContainer = e.currentTarget.parentElement.parentElement.parentElement;
+        const completeTaskContainer = document.getElementById('js-completeTaskContainer');
+        const todoItem = e.currentTarget.parentElement.parentElement;
+        if(taskContainer == completeTaskContainer) return;
         updateToDoState(true, docId)
         .then(() => {
-            const incompleteTaskContainer = document.getElementById('js-incompleteTaskContainer');
-            const completeTaskContainer = document.getElementById('js-completeTaskContainer');
-            
-            completeTaskContainer.prepend(todolist[todoItemNth]);
+            completeTaskContainer.prepend(todoItem);
         });
     });
 
     buttons[2].addEventListener('click', async (e) => {
+        const taskContainer = e.currentTarget.parentElement.parentElement.parentElement;
+        const todoItem = e.currentTarget.parentElement.parentElement;
         const docReference = await doc(db, 'todo-items', docId);
         await deleteDoc(docReference)
         .then(() => {
-            element.removeChild(buttons[2].parentElement.parentElement);
+            taskContainer.removeChild(todoItem);
             console.log('Delete data successfully!');
         });
     });
@@ -276,13 +277,15 @@ function addTodoItem(element, cb, docId, data) {
     element.prepend(div.childNodes[1]);
 }
 
-function toggleSlider(element, inCompleteTaskBtn, completeTaskBtn, bool) {
+function toggleSlider(slider, inCompleteTaskBtn, completeTaskBtn, bool) {
     if(bool) {
         addClassName(inCompleteTaskBtn, 'active');
         removeClassName(completeTaskBtn, 'active');
+        slider.style.transform = 'translateX(0)';
     } else {
         addClassName(completeTaskBtn, 'active');
         removeClassName(inCompleteTaskBtn, 'active');
+        slider.style.transform = 'translateX(-50%)';
     }
 }
 

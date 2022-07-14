@@ -1,6 +1,5 @@
 .modal__item {
   width: 100%;
-  min-width: 375px;
   max-width: 620px;
   height: fit-content;
   min-height: 220px;

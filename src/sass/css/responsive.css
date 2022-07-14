@@ -1,0 +1,24 @@
+@media only screen and (max-width: 375px) {
+  #root > header {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    padding: 20px 0;
+  }
+  #root > header .header__title {
+    font-size: 5rem;
+  }
+  #root > header .header__subtitle {
+    font-size: 1.6rem;
+  }
+  #root .content-container .content__slider-container .slider__to-do-items-container {
+    padding: 20px;
+  }
+  #root .modal {
+    padding: 0 20px;
+  }
+}
+
+/*# sourceMappingURL=responsive.css.map */

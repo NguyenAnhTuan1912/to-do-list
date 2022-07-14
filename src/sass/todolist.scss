@@ -3,9 +3,11 @@
 
 // Mixin
 
-@mixin setToDoItem-width-heigth($width, $max-width) {
+@mixin setToDoItem-width-heigth($width, $max-width, $min-width) {
+    @if $min-width != none {
+        min-width: $min-width;
+    }
     width: $width;
-    min-width: 375px;
     max-width: $max-width;
     height: fit-content;
     min-height: 80px;
@@ -15,31 +17,25 @@
 
 .content-container {
     .content__slider-container {
-        width: 200%;
+        @include flex(row, space-between, flex-start);
+        width: 201%;
         min-width: 375px;
         max-width: 1600px;
         height: fit-content;
         min-height: 120px;
-        overflow: auto;
+        overflow: hidden;
+        transition: 0.4s ease-in-out;
 
         .slider__to-do-items-container {
             @include flex(column, space-around, center);
-            @include setToDoItem-width-heigth(50%, 700px);
+            @include setToDoItem-width-heigth(50%, 700px, none);
             gap: 30px;
-            padding: 20px;
-
-            &:first-child {
-                float: left;
-            }
-
-            &:last-child {
-                float: right;
-            }
+            padding: 20px 0;
 
             .to-do-item {
                 position: relative;
                 @include flex(row, space-between, center);
-                @include setToDoItem-width-heigth(100%, 620px);
+                @include setToDoItem-width-heigth(100%, 620px, none);
                 flex-wrap: wrap;
                 padding: 12px 16px 12px 20px;
                 box-shadow: $box-shadow2;

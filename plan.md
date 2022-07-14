@@ -31,3 +31,4 @@ Chức năng cụ thể sẽ nói ở phần dưới.
 Compiler Layout.scss: sass ./layout.scss ./css/layout.css --watch
 Compiler todolist.scss: sass ./todolist.scss ./css/todolist.css --watch
 Compiler editadditem.scss: sass ./editadditem.scss ./css/editadditem.css --watch
+Compiler responsive.scss: sass ./responsive.scss ./css/responsive.css --watch

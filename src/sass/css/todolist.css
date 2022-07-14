@@ -2,8 +2,9 @@
   width: 200%;
   min-width: 375px;
   max-width: 1600px;
-  height: 100%;
+  height: fit-content;
   min-height: 120px;
+  overflow: auto;
 }
 .content-container .content__slider-container .slider__to-do-items-container {
   display: flex;
@@ -61,6 +62,7 @@
   grid-area: header;
 }
 .content-container .content__slider-container .slider__to-do-items-container .to-do-item > header .header__title {
+  cursor: pointer;
   font-size: 2.2rem;
   line-height: 2rem;
   max-width: 360px;

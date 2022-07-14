@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, addDoc, collection, query, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firestore';
+import { getFirestore, addDoc, collection, query, getDocs, doc, deleteDoc, updateDoc, Timestamp, orderBy, onSnapshot } from 'firebase/firestore';
 
 import Header from "./component/Header.js";
 import ToDoList from "./component/ToDoList.js";
@@ -28,75 +28,109 @@ window.onload = function() {
     const addTaskContainer = document.getElementById('js-addTaskContainer');
     const editTaskContainer = document.getElementById('js-editTaskContainer');
     const viewTaskContainer = document.getElementById('js-viewTaskContainer');
+    const completeTaskContainer = document.getElementById('js-completeTaskContainer');
     const incompleteTaskContainer = document.getElementById('js-incompleteTaskContainer');
     const modal = document.getElementById('js-modal');
 
-    loadAllTasks(incompleteTaskContainer, ToDoItem);
+    loadAllTasks(incompleteTaskContainer, completeTaskContainer, ToDoItem)
+    .then(() => {
+        const addBtn = document.getElementById('js-addBtn');
+        const inCompleteTaskBtn = document.getElementById('js-inCompleteTaskBtn');
+        const completeTaskBtn = document.getElementById('js-completeTaskBtn');
 
-    const addBtn = document.getElementById('js-addBtn');
+        const acceptAddBtn = document.getElementById('js-acceptAddBtn');
+        const acceptEditBtn = document.getElementById('js-acceptEditBtn');
+        const cancelAddBtn = document.getElementById('js-cancelAddBtn');
+        const cancelEditBtn = document.getElementById('js-cancelEditBtn');
+        const cancelViewBtn = document.getElementById('js-cancelViewBtn');
+        
+        const newTaskTitleInputField = document.getElementById('js-newTaskTitleInput');
+        const newTaskTDescriptionInputField = document.getElementById('js-newTaskDescriptionInput');
+        const editTaskTitleInputField = document.getElementById('js-editTaskTitleInput');
+        const editTaskDescriptionInputField = document.getElementById('js-editTaskDescriptionInput');
 
-    const acceptAddBtn = document.getElementById('js-acceptAddBtn');
-    const acceptEditBtn = document.getElementById('js-acceptEditBtn');
-    const cancelAddBtn = document.getElementById('js-cancelAddBtn');
-    const cancelEditBtn = document.getElementById('js-cancelEditBtn');
-    const cancelViewBtn = document.getElementById('js-cancelViewBtn');
-    
-    const newTaskTitleInputField = document.getElementById('js-newTaskTitleInput');
-    const newTaskTDescriptionInputField = document.getElementById('js-newTaskDescriptionInput');
-    const editTaskTitleInputField = document.getElementById('js-editTaskTitleInput');
-    const editTaskDescriptionInputField = document.getElementById('js-editTaskDescriptionInput');
+        toggleSlider('', inCompleteTaskBtn, completeTaskBtn, true);
 
-    addBtn.addEventListener('click', (e) => {
-        toggleVisibleContainer(modal);
-        containerEnable(addTaskContainer, editTaskContainer, viewTaskContainer);
+        addBtn.addEventListener('click', (e) => {
+            toggleVisibleContainer(modal);
+            containerEnable(addTaskContainer, editTaskContainer, viewTaskContainer);
+        });
+
+        // editBtn.addEventListener('click', (e) => {
+        //     const header = viewTaskContainer.getElementsByTagName('header')[0];
+        //     const title = header.getElementsByClassName('header__title')[0];
+        //     const subtitle = header.getElementsByClassName('header__subtitle')[0];
+
+        //     editTaskTitleInputField.value = title.textContent || '';
+        //     editTaskDescriptionInputField.value = subtitle.textContent || '';
+        //     containerEnable(editTaskContainer, addTaskContainer, viewTaskContainer);
+        // });
+
+        cancelAddBtn.addEventListener('click', (e) => {
+            toggleVisibleContainer(modal);
+            addClassName(addTaskContainer, 'hide');
+            newTaskTitleInputField.value = '';
+            newTaskTDescriptionInputField.value = '';
+        });
+
+        cancelEditBtn.addEventListener('click', (e) => {
+            editTaskContainer.setAttribute('data-id', '');
+            editTaskContainer.setAttribute('data-todoitem-nth', '');
+            toggleVisibleContainer(modal);
+            addClassName(editTaskContainer, 'hide');
+        });
+
+        cancelViewBtn.addEventListener('click', (e) => {
+            toggleVisibleContainer(modal);
+            addClassName(viewTaskContainer, 'hide');
+        });
+
+        acceptAddBtn.addEventListener('click', (e) => {
+            const data = {
+                'header-title': newTaskTitleInputField.value,
+                'header-subtitle': newTaskTDescriptionInputField.value,
+                'create-at': Timestamp.fromDate(new Date())
+            }
+
+            addData(data)
+            .then(() => {
+                toggleVisibleContainer(modal);
+                addClassName(addTaskContainer, 'hide');
+                
+                newTaskTitleInputField.value = '';
+                newTaskTDescriptionInputField.value = '';
+            });
+        });
+
+        acceptEditBtn.addEventListener('click', (e) => {
+            editData({'header-title': editTaskTitleInputField.value, 'header-subtitle': editTaskDescriptionInputField.value}, editTaskContainer.getAttribute('data-id'))
+            .then(() => {
+                const index = parseInt(editTaskContainer.getAttribute('data-todoitem-nth')) + 1;
+                const todoItem = document.querySelector(`.to-do-item:nth-child(${index})`);
+                const header = todoItem.getElementsByTagName('header')[0];
+                const title = header.getElementsByClassName('header__title')[0];
+                const subtitle = header.getElementsByClassName('header__subtitle')[0];
+
+                editTaskContainer.setAttribute('data-id', '');
+                editTaskContainer.setAttribute('data-todoitem-nth', '');
+
+                title.textContent = editTaskTitleInputField.value;
+                subtitle.textContent = editTaskDescriptionInputField.value;
+                toggleVisibleContainer(modal);
+                addClassName(editTaskContainer, 'hide');
+                editTaskTitleInputField.value = '';
+                editTaskDescriptionInputField.value = '';
+            })
+        });
+
+        inCompleteTaskBtn.addEventListener('click', (e) => {
+            toggleSlider('', inCompleteTaskBtn, completeTaskBtn, true);
+        });
+
+        completeTaskBtn.addEventListener('click', (e) => {
+            toggleSlider('', inCompleteTaskBtn, completeTaskBtn, false);
+        });
     });
-
-    // editBtn.addEventListener('click', (e) => {
-    //     const header = viewTaskContainer.getElementsByTagName('header')[0];
-    //     const title = header.getElementsByClassName('header__title')[0];
-    //     const subtitle = header.getElementsByClassName('header__subtitle')[0];
-
-    //     editTaskTitleInputField.value = title.textContent || '';
-    //     editTaskDescriptionInputField.value = subtitle.textContent || '';
-    //     containerEnable(editTaskContainer, addTaskContainer, viewTaskContainer);
-    // });
-
-    cancelAddBtn.addEventListener('click', (e) => {
-        toggleVisibleContainer(modal);
-        addClassName(addTaskContainer, 'hide');
-        newTaskTitleInputField.value = '';
-        newTaskTDescriptionInputField.value = '';
-    });
-
-    cancelEditBtn.addEventListener('click', (e) => {
-        toggleVisibleContainer(modal);
-        addClassName(editTaskContainer, 'hide');
-    });
-
-    cancelViewBtn.addEventListener('click', (e) => {
-        toggleVisibleContainer(modal);
-        addClassName(viewTaskContainer, 'hide');
-    });
-
-    acceptAddBtn.addEventListener('click', (e) => {
-        const data = {
-            'header-title': newTaskTitleInputField.value,
-            'header-subtitle': newTaskTDescriptionInputField.value
-        }
-        addData(data);
-        toggleVisibleContainer(modal);
-        addClassName(addTaskContainer, 'hide');
-        newTaskTitleInputField.value = '';
-        newTaskTDescriptionInputField.value = '';
-    });
-
-    // acceptEditBtn.addEventListener('click', (e) => {
-    //     editData();
-    //     toggleVisibleContainer(modal);
-    //     addClassName(editTaskContainer, 'hide');
-    //     editTaskTitleInputField.value = '';
-    //     editTaskDescriptionInputField.value = '';
-    // });
 }
 
 
@@ -108,88 +142,126 @@ function renderApp() {
     root.innerHTML = `
         ${Header({'header-title': 'To-do List', 'header-subtitle': 'Save you work to do later.'})}
         <hr>
-        ${Button([['btn-add']], [['js-addBtn']], '', 'Click here to add a new to-do item')}
+        <div class="content__button-container">
+            ${Button([['btn-add']], [['js-addBtn']], '', 'Click here to add a new to-do item')}
+            ${Button([['btn-add']], [['js-inCompleteTaskBtn']], '', 'Incomplete task')}
+            ${Button([['btn-add']], [['js-completeTaskBtn']], '', 'Complete task')}
+        </div>
         <hr>
         ${ToDoList()}
         ${Modal()}
     `;
 }
 
-async function loadAllTasks(taskContainer, cb) {
-    const q = query(collection(db, 'todo-items'));
+async function loadAllTasks(incompleteTaskContainer, completeTaskContainer,cb) {
+    const q = query(collection(db, 'todo-items'), orderBy('create-at', 'asc'));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
-        addTodoItem(taskContainer, cb, doc.id, doc.data());
+        if(!doc.data().isComplete)
+            addTodoItem(incompleteTaskContainer, cb, doc.id, doc.data());
+        else
+            addTodoItem(completeTaskContainer, cb, doc.id, doc.data());
     });
 }
 
-async function addData({'header-title': title, 'header-subtitle': subtitle}) {
+async function addData({'header-title': title, 'header-subtitle': subtitle, 'create-at': timeCreated}) {
     const incompleteTaskContainer = document.getElementById('js-incompleteTaskContainer');
     try {
         if(title === '' || title === 'null') throw 'Title is null.'
         await addDoc(collection(db, 'todo-items'), {
             'header-title': title,
-            'header-subtitle': subtitle
+            'header-subtitle': subtitle,
+            'create-at': timeCreated,
+            'isComplete': false
         })
         .then((doc) => {
-            addTodoItem(incompleteTaskContainer, ToDoItem, doc.id, {'header-title': title, 'header-subtitle': subtitle});
+            addTodoItem(incompleteTaskContainer, ToDoItem, doc.id, {'header-title': title, 'header-subtitle': subtitle, 'create-at': timeCreated});
         });
     } catch (error) {
         console.error(error);
     }
 }
 
-async function editData(element, data, docId) {
+async function editData(data, docId) {
     const docReference = await doc(db, 'todo-items', docId);
-        await updateDoc(docReference, {
-            'header-title': data['header-title'],
-            'header-subtitle': data['header-subtitle']
-        })
-        .then(() => {
-            const header = element.getElementsByTagName('header')[0];
-            const title = header.getElementsByClassName('header__title')[0];
-            const subtitle = header.getElementsByClassName('header__subtitle')[0];
-
-            title.textContent = data['header-title'],
-            subtitle.textContent = data['header-subtitle']
-            console.log('Update data successfully!');
-        });
+    await updateDoc(docReference, {
+        'header-title': data['header-title'],
+        'header-subtitle': data['header-subtitle'],
+    })
 }
+
+async function updateToDoState(state, docId) {
+    const docReference = await doc(db, 'todo-items', docId);
+    await updateDoc(docReference, {
+        'isComplete': state
+    })
+}
+
 
 function addTodoItem(element, cb, docId, data) {
     const div = document.createElement('div');
     div.innerHTML = cb(data);
 
-    const toDoContainer = div.querySelector('.to-do-item:last-child');
+    const toDoContainer = div.querySelector('.to-do-item:first-child');
     const buttons = toDoContainer.getElementsByTagName('button');
+    const viewClick = toDoContainer.getElementsByClassName('header__title')[0];
 
-    // const modal = document.getElementById('js-modal');
-    // const addTaskContainer = document.getElementById('js-addTaskContainer');
-    // const editTaskContainer = document.getElementById('js-editTaskContainer');
-    // const viewTaskContainer = document.getElementById('js-viewTaskContainer');
+    viewClick.addEventListener('click', (e) => {
+        const modal = document.getElementById('js-modal');
+        const addTaskContainer = document.getElementById('js-addTaskContainer');
+        const editTaskContainer = document.getElementById('js-editTaskContainer');
+        const viewTaskContainer = document.getElementById('js-viewTaskContainer');
+        const header = viewTaskContainer.getElementsByTagName('header')[0];
+        const title = header.getElementsByClassName('header__title')[0];
+        const subtitle = header.getElementsByClassName('header__subtitle')[0];
 
-    buttons[0].addEventListener('click', async (e) => {
-        // const header = viewTaskContainer.getElementsByTagName('header')[0];
-        // const title = header.getElementsByClassName('header__title')[0];
-        // const subtitle = header.getElementsByClassName('header__subtitle')[0];
+        title.textContent = data['header-title'];
+        subtitle.textContent = data['header-subtitle'];
+        toggleVisibleContainer(modal);
+        containerEnable(viewTaskContainer, editTaskContainer, addTaskContainer);
+    });
 
-        // title.textContent = data['header-title'];
-        // subtitle.textContent = data['header-subtitle'];
-        // toggleVisibleContainer(modal);
-        // containerEnable(viewTaskContainer, editTaskContainer, addTaskContainer);
+    buttons[0].addEventListener('click', (e) => {
+        
         const modal = document.getElementById('js-modal');
         const addTaskContainer = document.getElementById('js-addTaskContainer');
         const editTaskContainer = document.getElementById('js-editTaskContainer');
         const viewTaskContainer = document.getElementById('js-viewTaskContainer');
         const editTaskTitleInputField = document.getElementById('js-editTaskTitleInput');
         const editTaskDescriptionInputField = document.getElementById('js-editTaskDescriptionInput');
-        const acceptEditBtn = document.getElementById('js-acceptEditBtn');
+        const todolist = document.getElementsByClassName('to-do-item');
 
+        const todoItemNth = Array.from(todolist).indexOf(e.currentTarget.parentElement.parentElement);
+
+        if(!editTaskContainer.hasAttribute('data-id')) {
+            const attrId = document.createAttribute('data-id');
+            attrId.value = docId;
+            editTaskContainer.setAttributeNode(attrId);
+        } else editTaskContainer.setAttribute('data-id', docId);
+
+        if(!editTaskContainer.hasAttribute('data-todoitem-nth')) {
+            const attrNth = document.createAttribute('data-todoitem-nth');
+            attrNth.value = todoItemNth;
+            editTaskContainer.setAttributeNode(attrNth);
+        } else editTaskContainer.setAttribute('data-todoitem-nth', todoItemNth);
 
         editTaskTitleInputField.value = data['header-title'] || '';
         editTaskDescriptionInputField.value = data['header-subtitle'] || '';
         toggleVisibleContainer(modal);
         containerEnable(editTaskContainer, addTaskContainer, viewTaskContainer);
+    });
+
+    buttons[1].addEventListener('click', (e) => {
+        if(data.isComplete) return;
+        const todolist = document.getElementsByClassName('to-do-item');
+        const todoItemNth = Array.from(todolist).indexOf(e.currentTarget.parentElement.parentElement);
+        updateToDoState(true, docId)
+        .then(() => {
+            const incompleteTaskContainer = document.getElementById('js-incompleteTaskContainer');
+            const completeTaskContainer = document.getElementById('js-completeTaskContainer');
+            
+            completeTaskContainer.prepend(todolist[todoItemNth]);
+        });
     });
 
     buttons[2].addEventListener('click', async (e) => {
@@ -201,8 +273,20 @@ function addTodoItem(element, cb, docId, data) {
         });
     });
 
-    element.appendChild(div.childNodes[1]);
+    element.prepend(div.childNodes[1]);
 }
+
+function toggleSlider(element, inCompleteTaskBtn, completeTaskBtn, bool) {
+    if(bool) {
+        addClassName(inCompleteTaskBtn, 'active');
+        removeClassName(completeTaskBtn, 'active');
+    } else {
+        addClassName(completeTaskBtn, 'active');
+        removeClassName(inCompleteTaskBtn, 'active');
+    }
+}
+
+    
 
 function toggleVisibleContainer(containerName) {
     containerName.classList.toggle('hide');

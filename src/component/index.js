@@ -1,11 +1,11 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore, addDoc, collection, query, getDocs, doc, deleteDoc, updateDoc, Timestamp, orderBy, onSnapshot } from 'firebase/firestore';
 
-import Header from "./component/Header.js";
-import ToDoList from "./component/ToDoList.js";
-import Modal from "./component/Modal.js";
-import Button from "./component/Button.js";
-import ToDoItem from './component/ToDoItem.js';
+import Header from "./Header.js";
+import ToDoList from "./ToDoList.js";
+import Modal from "./Modal.js";
+import Button from "./Button.js";
+import ToDoItem from './ToDoItem.js';
 
 const root = document.getElementById('root');
 

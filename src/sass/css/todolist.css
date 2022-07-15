@@ -21,6 +21,9 @@
   height: fit-content;
   min-height: 80px;
   gap: 30px;
+  -moz-gap: 30px;
+  -o-gap: 30px;
+  -webkit-gap: 30px;
   padding: 20px 0;
 }
 .content-container .content__slider-container .slider__to-do-items-container .to-do-item {
@@ -54,7 +57,7 @@
   justify-content: center;
   align-items: flex-start;
   height: 100%;
-  width: 360px;
+  width: 100%;
   max-width: 360px;
   grid-area: header;
 }
@@ -62,6 +65,7 @@
   cursor: pointer;
   font-size: 2.2rem;
   line-height: 2rem;
+  width: 100%;
   max-width: 360px;
   max-height: 34px;
   font-weight: 600;
@@ -71,6 +75,7 @@
   padding: 0 5px;
 }
 .content-container .content__slider-container .slider__to-do-items-container .to-do-item > header .header__subtitle {
+  width: 100%;
   max-width: 360px;
   font-size: 1.4rem;
   max-height: 34px;

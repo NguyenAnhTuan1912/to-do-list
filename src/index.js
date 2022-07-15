@@ -58,16 +58,6 @@ window.onload = function() {
             containerEnable(addTaskContainer, editTaskContainer, viewTaskContainer);
         });
 
-        // editBtn.addEventListener('click', (e) => {
-        //     const header = viewTaskContainer.getElementsByTagName('header')[0];
-        //     const title = header.getElementsByClassName('header__title')[0];
-        //     const subtitle = header.getElementsByClassName('header__subtitle')[0];
-
-        //     editTaskTitleInputField.value = title.textContent || '';
-        //     editTaskDescriptionInputField.value = subtitle.textContent || '';
-        //     containerEnable(editTaskContainer, addTaskContainer, viewTaskContainer);
-        // });
-
         cancelAddBtn.addEventListener('click', (e) => {
             toggleVisibleContainer(modal);
             addClassName(addTaskContainer, 'hide');

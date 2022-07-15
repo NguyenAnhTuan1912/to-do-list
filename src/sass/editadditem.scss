@@ -37,11 +37,14 @@
 
         article {
             @include flex(column, space-around, flex-start);
-            gap: 10px;
             @include default-width-height;
 
             label {
                 @include default-width-height;
+
+                &:first-child {
+                    margin-bottom: 12px;
+                }
             }
         }
     }

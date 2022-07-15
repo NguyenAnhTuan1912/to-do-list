@@ -136,7 +136,7 @@ function renderApp() {
         <hr>
         <div class="content__button-container">
             ${Button([['btn-add']], [['js-addBtn']], '', 'Click here to add a new Task')}
-            ${Button([['btn-add']], [['js-inCompleteTaskBtn']], '', 'Incomplete task')}
+            ${Button([['btn-add']], [['js-inCompleteTaskBtn']], '', 'Task')}
             ${Button([['btn-add']], [['js-completeTaskBtn']], '', 'Complete task')}
         </div>
         <hr>

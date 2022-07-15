@@ -28,13 +28,15 @@
   flex-direction: column;
   justify-content: space-around;
   align-items: flex-start;
-  gap: 10px;
   width: 100%;
   height: fit-content;
 }
 .modal__item .to-do-form article label {
   width: 100%;
   height: fit-content;
+}
+.modal__item .to-do-form article label:first-child {
+  margin-bottom: 12px;
 }
 .modal__item .button-container {
   display: flex;

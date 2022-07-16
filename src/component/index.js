@@ -206,9 +206,14 @@ function addTodoItem(element, cb, docId, data) {
         const header = viewTaskContainer.getElementsByTagName('header')[0];
         const title = header.getElementsByClassName('header__title')[0];
         const subtitle = header.getElementsByClassName('header__subtitle')[0];
+        const todoItem = e.currentTarget.parentElement.parentElement;
+        const todoItemHeader = todoItem.getElementsByTagName('header')[0];
+        const todoItemtitle = todoItemHeader.getElementsByClassName('header__title')[0];
+        const todoItemsubtitle = todoItemHeader.getElementsByClassName('header__subtitle')[0];
 
-        title.textContent = data['header-title'];
-        subtitle.textContent = data['header-subtitle'];
+
+        title.textContent = todoItemtitle.textContent;
+        subtitle.textContent = todoItemsubtitle.textContent;
         toggleVisibleContainer(modal);
         containerEnable(viewTaskContainer, editTaskContainer, addTaskContainer);
     });
